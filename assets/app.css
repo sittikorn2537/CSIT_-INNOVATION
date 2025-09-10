@@ -1,0 +1,34 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+body {
+  font-family: 'Anuphan', sans-serif !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.pages .nav-item>a {
+  color: black !important;
+}
+
+.pages .nav-item.active>a {
+  color: #4080c4 !important;
+}
+
+.pages.site-header {
+  position: relative !important;
+}
+
+@media (max-width: 1024px) {
+
+  .pages .s-container {
+    background: var(--color-base-200) !important;
+    padding: 5px !important;
+  }
+
+  .pages .logo img {
+    width: 50px !important;
+  }
+}

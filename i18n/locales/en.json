@@ -1,0 +1,33 @@
+{
+  "company":{
+    "name": "C.S. Innovation Technology Co., Ltd.",
+    "address1": "88/1 Soi Suksawat 30 Yak 7, Suksawat Road, Bangpakok, Rat Burana, Bangkok 10140",
+    "title": "Importer and Distributor of Comprehensive Communication Equipment",
+    "description": "We import and distribute high-quality communication equipment, delivering reliable solutions for businesses and households."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "works": "Our Works",
+    "products": "Products",
+    "contact": "Contact Us"
+  },
+  "service": {
+    "description": "We are an importer and distributor of high-quality communication system equipment, covering a wide range of applications for both businesses and households. Our mission is to provide reliable and comprehensive solutions to meet all your communication needs."
+  },
+  "product": {
+    "description": "We offer a wide range of communication products, including IP cameras, CCTV systems, network devices, and accessories. Our products are sourced from reputable manufacturers to ensure quality and reliability.",
+    "all": "All Products"
+  },
+  "work": {
+    "description": "We take pride in our involvement in installing efficient communication systems for a diverse range of clients, including small, medium, and large businesses, as well as government projects and households. We are committed to delivering high-quality work that fully meets our clients' needs.",
+    "all": "All Works"  
+  },
+  "footer" : {
+    "menu": "Menu",
+    "Newsletter":" Subscribe to our Newsletter",
+    "subscribe": "Subscribe",
+    "detail":"Stay updated with our latest news and information."
+  }
+}
+
