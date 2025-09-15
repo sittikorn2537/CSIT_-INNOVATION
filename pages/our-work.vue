@@ -2,7 +2,7 @@
 definePageMeta({
     layout: "blank",
 });
-import WorkShowcase from "@/components/frontend/WorkShowcase.vue";
+import WorkShow from "@/components/frontend/WorkShow.vue";
 import Footer from "~/components/Layout/Footer.vue";
 
 </script>
@@ -13,9 +13,9 @@ import Footer from "~/components/Layout/Footer.vue";
         <h1 class="text-3xl md:text-4xl font-extrabold  ">{{ $t('nav.works') }}</h1>
         <p class=" mt-1"></p>
     </div>
-    <WorkShowcase class="pages" />
-    <Footer/>
-</template> 
+    <WorkShow class="pages" />
+    <Footer />
+</template>
 <style>
 .pages .our-work {
     display: none;

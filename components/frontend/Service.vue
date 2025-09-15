@@ -1,5 +1,83 @@
 <script setup lang="ts">
 import CardsMedia from "../ui-components/cards/CardsMedia.vue";
+import { ref } from 'vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Grid, Pagination, Navigation, Autoplay, A11y } from 'swiper/modules'
+
+// styles ของ Swiper
+import 'swiper/css'
+import 'swiper/css/grid'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
+
+// ตัวอย่างข้อมูล mock
+type Service = {
+    id: string
+    icon: string     // จะใช้ emoji / url รูปเล็ก / icon-font ก็ได้
+    title: string
+    desc: string
+    href: string
+}
+
+const services = ref<Service[]>([
+    {
+        id: 's1',
+        icon: '🧩',
+        title: 'ระบบเว็บไซต์คุณภาพสูง',
+        desc: 'ดีไซน์+โค้ดให้คลีนเร็ว รองรับทั้งคอนเทนต์และ SEO ใช้งานง่าย',
+        href: '#'
+    },
+    {
+        id: 's2',
+        icon: '🧑🏻‍💻',
+        title: 'รับทำเว็บไซต์ และการตลาดออนไลน์',
+        desc: 'ออกแบบให้โดนใจพร้อมทำแคมเปญออนไลน์เพื่อเพิ่มยอดขาย',
+        href: '#'
+    },
+    {
+        id: 's3',
+        icon: '🔎',
+        title: 'บริการ Google Ads',
+        desc: 'ยิงแอดให้ตรงกลุ่ม เพิ่มโอกาสการมองเห็นและยอดขาย',
+        href: '#'
+    },
+    {
+        id: 's4',
+        icon: '📈',
+        title: 'บริการ SEO',
+        desc: 'ทำอันดับให้ดีขึ้นบน Google อย่างยั่งยืน',
+        href: '#'
+    },
+    {
+        id: 's5',
+        icon: '💬',
+        title: 'บริการ LINE Official Account',
+        desc: 'บริหาร LINE OA ให้คุ้มค่า ทั้งบรอดแคสต์และแชตบอท',
+        href: '#'
+    },
+    {
+        id: 's6',
+        icon: '🧰',
+        title: 'บริการ Google Workspace',
+        desc: 'อีเมลธุรกิจและเครื่องมือองค์กร เพื่อการทำงานร่วมกันอย่างมีประสิทธิภาพ',
+        href: '#'
+    },
+    {
+        id: 's5',
+        icon: '💬',
+        title: 'บริการ LINE Official Account',
+        desc: 'บริหาร LINE OA ให้คุ้มค่า ทั้งบรอดแคสต์และแชตบอท',
+        href: '#'
+    },
+    {
+        id: 's6',
+        icon: '🧰',
+        title: 'บริการ Google Workspace',
+        desc: 'อีเมลธุรกิจและเครื่องมือองค์กร เพื่อการทำงานร่วมกันอย่างมีประสิทธิภาพ',
+        href: '#'
+    }
+])
+
 type Item = {
     image: string
     title: string
@@ -55,7 +133,7 @@ const features: Feature[] = [
 ]
 
 const videoThumb =
-  'https://picsum.photos/1600/900?random=10'
+    'https://picsum.photos/1600/900?random=10'
 </script>
 
 <template>
@@ -75,7 +153,7 @@ const videoThumb =
                             <!-- แผงข้อความสีส้ม (ขวา) -->
                             <div class="md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 md:w-[58%] mt-6 md:mt-0">
                                 <div
-                                    class="relative bg-[#d80717] text-slate-900 rounded-xl shadow-xl ring-1 ring-black/5 p-6 md:p-8">
+                                    class="relative bg-[#d80717] text-slate-900 rounded-xl shadow-xl ring-1 ring-black/5 pa-6 md:pa-8">
                                     <!-- ลายน้ำไอคอนเบา ๆ -->
                                     <svg class="hidden md:block absolute right-6 bottom-4 w-40 h-40 text-white/20"
                                         viewBox="0 0 24 24" fill="currentColor">
@@ -87,17 +165,17 @@ const videoThumb =
                                         {{ $t('company.name') }}
                                     </p>
                                     <h3 class="text-2xl md:text-3xl font-extrabold leading-snug mt-1">
-                                           {{ $t('company.title') }}
+                                        {{ $t('company.title') }}
                                     </h3>
 
                                     <p class="mt-4 leading-relaxed">
-                                             {{ $t('company.description') }}
+                                        {{ $t('company.description') }}
                                     </p>
 
                                     <div class="mt-5">
                                         <NuxtLink to="/our-work"
                                             class="btn btn-ghost no-underline text-slate-900 hover:bg-slate-900 hover:text-white">
-                                               {{ $t("work.all") }}
+                                            {{ $t("work.all") }}
                                             <svg viewBox="0 0 24 24" class="w-4 h-4 ml-1" fill="currentColor">
                                                 <path d="M12 4l1.41 1.41L8.83 10H20v2H8.83l4.58 4.59L12 18l-8-8 8-8z" />
                                             </svg>
@@ -109,53 +187,45 @@ const videoThumb =
                     </div>
                 </section>
             </v-col>
-            <v-col cols="12" sm="12" lg="12" class="text-center my-10">
-                <div class="text-5xl">{{ $t('nav.services') }} </div>
-                <!-- <div class="text-1xl my-5 max-w-2xl m-auto">{{ $t('service.description') }} </div> -->
-            </v-col>
-            <v-col cols="12" sm="12" lg="12" class="mb-10">
-                <section class="w-full">
-                    <div class="mx-auto max-w-6xl px-4 lg:px-6">
-                        <!-- 2 คอลัมน์บนเดสก์ท็อป / 1 คอลัมน์บนมือถือ -->
-                        <div class="grid gap-6 md:gap-8 md:grid-cols-2">
-                            <article v-for="(it, i) in items" :key="i"
-                                class="group relative overflow-hidden rounded-xl shadow-lg">
-                                <!-- รูปพื้นหลัง -->
-                                <img :src="it.image" :alt="it.title"
-                                    class="h-[340px] md:h-[460px] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+            <v-col cols="12">
+                <section class="relative z-10 py-14 bg-slate-50">
+                    <div class="container mx-auto max-w-6xl px-4">
+                        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-8">บริการของเรา</h2>
 
-                                <!-- ชั้นทึบ (overlay) -->
-                                <div
-                                    class="absolute inset-0 bg-slate-900/55 group-hover:bg-slate-900/45 transition-colors duration-300" />
-
-                                <!-- เนื้อหา -->
-                                <div class="absolute inset-0 left-10 top-10">
-                                    <div class="h-full p-6 md:p-8 flex">
-                                        <div class="max-w-md text-white mt-2">
-                                            <h3 class="text-2xl md:text-3xl font-extrabold text-red-500 drop-shadow-sm">
-                                                {{ it.title }}
-                                            </h3>
-
-                                            <p class="mt-3 text-white/90 leading-relaxed">
-                                                {{ it.description }}
-                                            </p>
-                                            <NuxtLink :to="it.href"
-                                                class="mt-5 inline-flex items-center gap-2 font-semibold text-blue-300  hover:text-blue-500 transition-colors">
-                                                ดูรายละเอียด
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                                                    aria-hidden="true">
-                                                    <path
-                                                        d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z" />
-                                                </svg>
-                                            </NuxtLink>
+                        <ClientOnly>
+                            <Swiper :modules="[Grid, Pagination, Navigation, Autoplay, A11y]" :space-between="16"
+                                :loop="false" :autoplay="{ delay: 4500, disableOnInteraction: true }"
+                                :pagination="{ clickable: true }" navigation :breakpoints="{
+                                    0: { slidesPerView: 1, grid: { rows: 1, fill: 'row' } },
+                                    480: { slidesPerView: 1.2, grid: { rows: 2, fill: 'row' } },
+                                    640: { slidesPerView: 2, grid: { rows: 2, fill: 'row' } },
+                                    1024: { slidesPerView: 3, grid: { rows: 2, fill: 'row' } }
+                                }" class="service-swiper !pb-10">
+                                <SwiperSlide v-for="s in services" :key="s.id">
+                                    <div class="h-full rounded-2xl bg-white/90 ring-1 ring-slate-200 shadow-sm px-5 py-5
+                     hover:shadow-md hover:bg-white transition">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="flex items-center justify-center w-10 h-10 rounded-full bg-sky-100 text-sky-600 text-xl shrink-0">
+                                                {{ s.icon }}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h3 class="text-base font-semibold text-slate-900 truncate">
+                                                    {{ s.title }}
+                                                </h3>
+                                                <p class="text-sm text-slate-600 mt-1 line-clamp-3">
+                                                    {{ s.desc }}
+                                                </p>
+                                                <a :href="s.href"
+                                                    class="inline-flex items-center gap-1 text-sky-600 text-sm font-medium mt-3 hover:underline">
+                                                    รายละเอียดเพิ่มเติม <span aria-hidden="true">→</span>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- เส้นขอบขาวบาง ๆ ตามตัวอย่าง -->
-                                <div class="pointer-events-none absolute inset-0 ring-1 ring-white/10 rounded-xl"></div>
-                            </article>
-                        </div>
+                                </SwiperSlide>
+                            </Swiper>
+                        </ClientOnly>
                     </div>
                 </section>
             </v-col>

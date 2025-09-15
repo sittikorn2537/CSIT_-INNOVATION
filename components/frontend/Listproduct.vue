@@ -44,41 +44,44 @@ const prev = () => (page.value = Math.max(page.value - 1, 1))
 <template>
     <div
         class="  text-center why-section  w-full bg-gradient-to-r from-sky-500 via-slate-900 to-red-900 text-white py-10">
-        <h1 class="text-3xl md:text-4xl font-extrabold  ">{{$t('nav.products')}}</h1>
-        <p class=" mt-1 max-w-4xl m-auto">{{ $t('product.description') }}</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold  ">{{ $t('nav.products') }}</h1>
+        <p class=" mt-1 max-w-4xl ma-auto">{{ $t('product.description') }}</p>
     </div>
     <div class="container mx-auto max-w-6xl px-4 py-10">
         <!-- Grid -->
         <div class="grid gap-6 sm:grid-cols-3 lg:grid-cols-4">
             <article v-for="p in products" :key="p.id"
                 class="group card  rounded-xl ring-1 ring-slate-200 hover:ring-sky-200 shadow-sm hover:shadow-md transition overflow-hidden h-full">
-                <div class="flex flex-col h-full">
-                    <!-- รูป: อัตราส่วนเดียว -->
-                    <div class="relative bg-slate-50">
-                        <div class="aspect-[4/3] grid place-items-center">
-                            <img :src="p.image" :alt="p.name"
-                                class="max-h-full object-contain transition-transform duration-300 group-hover:scale-[1.03]" />
-                        </div>
-                    </div>
-                    <!-- เนื้อหา -->
-                    <div class="flex flex-col flex-1 p-5">
-                        <!-- ชื่อ -->
-                        <h3 class="text-slate-800 font-semibold leading-snug min-h-[3.5rem]">
-                            {{ p.name }}
-                        </h3>
-                        <!-- ราคา -->
-                        <div class="mt-3">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-red-500 font-extrabold text-lg">{{ thb(p.price) }}</span>
-                                <span v-if="p.unit" class="text-slate-400 text-sm">/ {{ p.unit }}</span>
-                            </div>
-                            <div v-if="p.compareAt && p.compareAt > p.price"
-                                class="text-slate-400 text-sm line-through">
-                                {{ thb(p.compareAt) }}
+                <NuxtLink :to="'/product/' + p.id" class="block h-full">
+                    <div class="flex flex-col h-full">
+                        <!-- รูป: อัตราส่วนเดียว -->
+                        <div class="relative bg-slate-50">
+                            <div class="aspect-[4/3] grid place-items-center">
+                                <img :src="p.image" :alt="p.name"
+                                    class="max-h-full object-contain transition-transform duration-300 group-hover:scale-[1.03]" />
                             </div>
                         </div>
+                        <!-- เนื้อหา -->
+                        <div class="flex flex-col flex-1 pa-5">
+                            <!-- ชื่อ -->
+                            <h3 class="text-slate-800 font-semibold leading-snug min-h-[3.5rem]">
+                                {{ p.name }}
+                            </h3>
+                            <!-- ราคา -->
+                            <div class="mt-3">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-red-500 font-extrabold text-lg">{{ thb(p.price) }}</span>
+                                    <span v-if="p.unit" class="text-slate-400 text-sm">/ {{ p.unit }}</span>
+                                </div>
+                                <div v-if="p.compareAt && p.compareAt > p.price"
+                                    class="text-slate-400 text-sm line-through">
+                                    {{ thb(p.compareAt) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </NuxtLink>
+
             </article>
         </div>
     </div>

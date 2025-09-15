@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     }]
   ],
 
+
   ssr: false,
   vite: {
     plugins: [tailwindcss()],
@@ -56,7 +57,9 @@ export default defineNuxtConfig({
     dbPassword: process.env.DB_PASSWORD || '',
     dbName: process.env.DB_NAME || 'myapp',
     // public (client can read) -> อย่าใส่ credential ที่ลับ
-    public: {},
+    public: {
+      apiBase: process.env.API_URL || 'http://localhost:3000',
+    },
   },
 
   nitro: {

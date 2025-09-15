@@ -14,10 +14,14 @@ const props = defineProps({ item: Object, level: Number });
             <template v-slot:prepend>
                 <div class="navbox  bg-hover-primary" >
                     <span class="icon-box">
-                        <Icon :icon="'solar:' + item.icon" height="24" width="24" :level="level"  :class="'position-relative z-index-2 '" />
+                         <component v-if="item.icon" :is="item.icon" class="w-5 h-5" />
+                        <!-- <Icon :icon="'solar:' + item.icon" height="24" width="24" :level="level"  :class="'position-relative z-index-2 '" /> -->
                     </span>
                 </div>
+     
             </template>
+
+            
             <v-list-item-title class="text-subtitle-1 font-weight-medium" color="primary">{{item.title }}
 
                 <span v-if="item.children">

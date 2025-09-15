@@ -9,9 +9,8 @@
       <!-- Center: Desktop nav -->
       <nav id="site-nav-d" class="site-nav-d" aria-label="Main">
         <ul class="nav-list">
-          <li v-for="item in menu" :key="item.id" class="nav-item"
-            :class="{ active: $route.path === localePath(item.to) }">
-            <NuxtLink :to="item.to">{{ item.label }}</NuxtLink>
+          <li v-for="item in menu" :key="item.id" class="nav-item" :class="{ active: isActive(item.to) }">
+            <NuxtLink :to="localePath(item.to)">{{ item.label }}</NuxtLink>
             <i class="nav-underline" aria-hidden="true"></i>
           </li>
         </ul>
@@ -22,21 +21,33 @@
         <NuxtLink to="/contact-us" class="btn-cta"> {{ $t('nav.contact') }} </NuxtLink>
       </div>
 
-      <div class="dropdown btn-blue language">
-        <label tabindex="0" class="  ">
-          <span class="flex items-center justify-center ">
-            <!-- <Icon icon="material-symbols-light:emoji-language-rounded" width="20" height="20" /> -->
-            {{ locale.toUpperCase() }}
-          </span>
-        </label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-25 text-base mt-4"
-          style="margin-top: 3px;">
-          <li><a @click.prevent="setLocale('th')">ไทย</a></li>
-          <li><a @click.prevent="setLocale('en')">English</a></li>
-        </ul>
+      <div class="relative inline-block text-left ml-auto">
+        <!-- ปุ่ม -->
+        <button @click="open = !open"
+          class="inline-flex  items-center gap-2 text-black btn-blue  text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none">
+          {{ locale.toUpperCase() }}
+          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- เมนู -->
+        <div v-if="open"
+          class="absolute right-0 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+          <div class="py-1">
+            <a href="#" @click.prevent="setLocale('th')"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              ไทย
+            </a>
+            <a href="#" @click.prevent="setLocale('en')"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              English
+            </a>
+          </div>
+        </div>
       </div>
       <!-- Mobile toggle -->
-      <button class="burger" :aria-expanded="isOpen ? 'true' : 'false'" aria-label="Toggle menu" @click="toggle">
+      <button class="burger mr-3" :aria-expanded="isOpen ? 'true' : 'false'" aria-label="Toggle menu" @click="toggle">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -70,6 +81,12 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const { locale, setLocale, t } = useI18n()
+const open = ref(false)
+
+const changeLocale = (lang: 'th' | 'en') => {
+  locale.value = lang
+  open.value = false
+}
 
 // const route = useRoute()
 const localePath = useLocalePath()
@@ -86,12 +103,33 @@ const menu = computed(() => [
 const route = useRoute()
 const currentPath = computed(() => (route.path.replace(/\/+$/, '') || '/'))
 // เช็ค active รองรับทั้ง path และ object (มี hash)
-const normalize = (p: string) => (p.replace(/\/+$/, '') || '/')
+const normalize = (p: string) => (p || '/').replace(/\/+$/, '') || '/'
+
 const isActive = (to: any) => {
-  const current = normalize(route.path)
-  const targetPath = typeof to === 'string' ? to : to?.path || '/'
-  return current === normalize(targetPath)
+  const currentPath = normalize(route.path)
+  const currentHash = route.hash || ''
+
+  let targetPath = '/'
+  let targetHash = ''
+
+  if (typeof to === 'string') {
+    const [p, h] = to.split('#')
+    targetPath = normalize(p || '/')
+    targetHash = h ? `#${h}` : ''
+  } else {
+    targetPath = normalize(to?.path || '/')
+    targetHash = to?.hash || ''
+  }
+
+  // 🚫 ถ้าเป็น anchor (#service อะไรพวกนี้) -> ไม่ active เลย
+  if (targetHash || to.startsWith?.('/#')) {
+    return false
+  }
+
+  // ปกติ: ตรงกัน หรือ path ลูกก็ active
+  return currentPath === targetPath || currentPath.startsWith(targetPath + '/')
 }
+
 
 // state เมนูมือถือ (ตามเดิมของคุณ)
 const isOpen = useState<boolean>('site-nav-open', () => false)
@@ -194,7 +232,7 @@ const toggle = () => {
 }
 
 .btn-blue {
-  display: inline-block;
+  /* display: inline-block; */
   padding: 10px 18px;
   margin-right: 5px;
   border-radius: 999px;

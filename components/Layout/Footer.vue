@@ -1,64 +1,90 @@
 <script setup lang="ts">
-
 import { Icon } from "@iconify/vue";
 </script>
 
 <template>
-    <footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
-        <aside>
-            <LayoutFullLogoDark />
-            <p>
-                {{ $t('company.name') }}
-                <br />
-                {{ $t('company.address1') }}
-            </p>
-        </aside>
-        <nav>
-            <h6 class="footer-title">{{ $t('footer.menu') }}</h6>
-            <a class="link link-hover" href="/">{{ $t('nav.home') }}</a>
-            <a class="link link-hover" href="/#service">{{ $t('nav.services') }}</a>
-            <a class="link link-hover" href="/our-work">{{ $t('nav.works') }}</a>
-            <a class="link link-hover" href="/product">{{ $t('nav.products') }}</a>
-            <a class="link link-hover" href="/contact">{{ $t('nav.contact') }}</a>
-        </nav>
-        <nav>
-            <h6 class="footer-title">{{ $t('nav.contact') }}</h6>
-            <p class="text-sm flex">{{ $t('company.name') }}</p>
-            <p class="text-sm max-w-xs flex">
-                {{ $t('company.address1') }}
-            </p>
-            <a href="https://www.facebook.com/CSInnovationTechnology" target="_blank" class="link link-hover flex">
-                <Icon icon="line-md:facebook" width="18" height="18" class="mr-2" />C.S Innovation Technology
-            </a>
-            <a href="mailto:test@gamil.com" class="link link-hover flex">
-                <Icon icon="line-md:email" width="18" height="18" class="mr-2" />
-                test@gamil.com
-            </a>
-            <a href="tel:034105191" class="link link-hover flex">
-                <Icon icon="line-md:phone" width="18" height="18" class="mr-2" />
-                034-105-191
-            </a>
-            <a href="tel:0936351949" class="link link-hover flex">
-                <Icon icon="line-md:phone" width="18" height="18" class="mr-2" />
-                093-635-1949 (Khun Vittakorn)
-            </a>
-            <a href="https://line.me/R/ti/p/@CSInnovation" target="_blank" class="link link-hover flex">
-                <Icon icon="line-md:chat" width="18" height="18" class="mr-2" /> @CSInnovation
-            </a>
+  <footer class="bg-slate-900 text-gray-200 py-12 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
-        </nav>
-        <form>
-    <h6 class="footer-title">{{ $t('footer.Newsletter') }}</h6>
-    <fieldset class="w-80">
-      <label>{{$t('footer.detail') }}</label>
-      <div class="join mt-2">
-        <input
-          type="text"
-          placeholder="E-mail"
-          class="input input-bordered join-item" />
-        <button class="btn btn-primary join-item">{{ $t('footer.subscribe') }}</button>
+      <!-- Logo + Address -->
+      <div>
+        <LayoutFullLogoDark class="mb-3" />
+        <p class="text-sm leading-relaxed">
+          {{ $t('company.name') }} <br />
+          {{ $t('company.address1') }}
+        </p>
       </div>
-    </fieldset>
-  </form>
-    </footer>
+
+      <!-- Menu -->
+      <div>
+        <h6 class="text-lg font-semibold mb-3">{{ $t('footer.menu') }}</h6>
+        <ul class="space-y-2 text-sm">
+          <li><NuxtLink class="hover:underline" to="/">{{ $t('nav.home') }}</NuxtLink></li>
+          <li><NuxtLink class="hover:underline" to="/#service">{{ $t('nav.services') }}</NuxtLink></li>
+          <li><NuxtLink class="hover:underline" to="/our-work">{{ $t('nav.works') }}</NuxtLink></li>
+          <li><NuxtLink class="hover:underline" to="/product">{{ $t('nav.products') }}</NuxtLink></li>
+          <li><NuxtLink class="hover:underline" to="/contact">{{ $t('nav.contact') }}</NuxtLink></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h6 class="text-lg font-semibold mb-3">{{ $t('nav.contact') }}</h6>
+        <p class="text-sm font-medium">{{ $t('company.name') }}</p>
+        <p class="text-sm max-w-xs mb-3">{{ $t('company.address1') }}</p>
+
+        <ul class="space-y-2 text-sm">
+          <li>
+            <a href="https://www.facebook.com/CSInnovationTechnology" target="_blank" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:facebook" width="18" height="18" /> C.S Innovation Technology
+            </a>
+          </li>
+          <li>
+            <a href="mailto:test@gamil.com" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:email" width="18" height="18" /> test@gamil.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:034105191" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:phone" width="18" height="18" /> 034-105-191
+            </a>
+          </li>
+          <li>
+            <a href="tel:0936351949" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:phone" width="18" height="18" /> 093-635-1949 (Khun Vittakorn)
+            </a>
+          </li>
+          <li>
+            <a href="https://line.me/R/ti/p/@CSInnovation" target="_blank" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:chat" width="18" height="18" /> @CSInnovation
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <h6 class="text-lg font-semibold mb-3">{{ $t('footer.Newsletter') }}</h6>
+        <p class="text-sm text-gray-600 mb-3">{{ $t('footer.detail') }}</p>
+        <form class="flex">
+          <input
+            type="email"
+            placeholder="E-mail"
+            class="flex-1 px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-r-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+          >
+            {{ $t('footer.subscribe') }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="mt-10 border-t border-gray-300 pt-6 text-center text-sm text-gray-500">
+      © {{ new Date().getFullYear() }} {{ $t('company.name') }}. All rights reserved.
+    </div>
+  </footer>
 </template>
