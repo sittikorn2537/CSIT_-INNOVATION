@@ -3,22 +3,21 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   modules: [
     ['@nuxtjs/i18n', {
-      lazy: true,
       langDir: 'locales',
       defaultLocale: 'th',
-      locales: [
-        { code: 'th', iso: 'th-TH', file: 'th.json', name: 'ไทย' },
-        { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' }
-      ],
       strategy: 'prefix_except_default',
+      locales: [
+        { code: 'th', iso: 'th-TH', files: ['th.json'], name: 'ไทย' },
+        { code: 'en', iso: 'en-US', files: ['en.json'], name: 'English' }
+      ],
       detectBrowserLanguage: {
         useCookie: true,
         cookieKey: 'i18n_redirected',
-        redirectOn: 'root'
-      }
+        redirectOn: 'root' // recommended
+      },
+      vueI18n: './i18n.config.ts'
     }]
   ],
-
 
   ssr: false,
   vite: {
