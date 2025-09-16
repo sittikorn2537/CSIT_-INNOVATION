@@ -30,11 +30,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       title:
-        "บริษัท ซี.เอส. อินโนเวชั่น เทคโนโลยี จำกัด",
+        "C.S. Innovation Technology Co., Ltd. (CSIT)",
       meta: [
-        { name: 'description', content: ' บริษัท ซี.เอส อินโนเวชั่น เทคโนโลยี จำกัด ประกอบธุรกิจประเภท การขายส่งและการขายปลีกการซ่อมยานยนต์และ จักรยานยนต์ โดยให้บริการด้าน ร้านขายปลีกอุปกรณ์การสื่อสารโทรคมนาคม' },
-        { property: 'og:title', content: 'บริษัท ซี.เอส อินโนเวชั่น เทคโนโลยี จำกัด ' },
-        { property: 'og:description', content: 'คำอธิบายสั้น ๆ' },
+        { name: 'description', content: 'บริษัท ซี.เอส. อินโนเวชั่น เทคโนโลยี จำกัด (CSIT) ผู้เชี่ยวชาญด้านการออกแบบ จัดหา และบูรณาการระบบออกอากาศ ระบบจัดเก็บข้อมูลกลาง และโซลูชันไอทีครบวงจร' },
+        { property: 'og:title', content: 'บริษัท ซี.เอส. อินโนเวชั่น เทคโนโลยี จำกัด (CSIT)' },
+        { property: 'og:description', content: 'CSIT ผู้นำด้านโซลูชันเทคโนโลยี ออกแบบ จัดหา และบูรณาการระบบอย่างครบวงจร' },
         { property: 'og:image', content: '/images/logos/logo-dark.png' },   // ✅ รูป preview เวลาแชร์
       ],
       link: [

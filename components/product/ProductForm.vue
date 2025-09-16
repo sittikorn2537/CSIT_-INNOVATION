@@ -1,356 +1,254 @@
-<!-- components/products/ProductForm.vue -->
-<template>
-  <v-dialog v-model="open" max-width="1100" persistent>
-    <v-card rounded="xl">
-      <!-- Header -->
-      <v-card-title class="d-flex align-center justify-space-between">
-        <div>
-          <div class="text-h6">{{ isEdit ? 'แก้ไขสินค้า' : 'เพิ่มสินค้า' }}</div>
-          <div class="text-medium-emphasis text-body-2">
-            กรอกข้อมูลให้ครบถ้วน & อัปโหลดรูปให้ชัดเจน
-          </div>
-        </div>
-        <div class="d-flex ga-3 align-center">
-          <v-btn variant="outlined" rounded="xl" @click="onClose">ยกเลิก</v-btn>
-          <v-btn :loading="saving" color="primary" rounded="xl" @click="save">
-            {{ isEdit ? 'บันทึกการแก้ไข' : 'บันทึกสินค้า' }}
-          </v-btn>
-        </div>
-      </v-card-title>
-
-      <v-divider />
-
-      <!-- Body -->
-      <v-card-text>
-        <v-row>
-          <!-- LEFT -->
-          <v-col cols="12" lg="6">
-            <!-- Category -->
-            <v-label class="mb-2">หมวดหมู่สินค้า *</v-label>
-            <div class="d-flex ga-2">
-              <v-select
-                v-model="form.category_id"
-                :items="categories"
-                item-title="name_th"
-                item-value="id"
-                variant="outlined"
-                density="comfortable"
-                rounded="lg"
-                hide-details="auto"
-                class="flex-1"
-                placeholder="— เลือกหมวดหมู่ —"
-              />
-              <v-btn variant="outlined" rounded="lg" @click="quickAddCategory">เพิ่ม</v-btn>
-            </div>
-            <v-messages
-              v-if="errors.category_id"
-              :value="[errors.category_id]"
-              class="mt-1 text-error"
-            />
-
-            <!-- Name -->
-            <div class="mt-4">
-              <v-label class="mb-2">ชื่อสินค้า</v-label>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.name_th"
-                    label="ชื่อสินค้า (ไทย) *"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    hide-details="auto"
-                  />
-                  <v-messages
-                    v-if="errors.name_th"
-                    :value="[errors.name_th]"
-                    class="mt-1 text-error"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    v-model="form.name_en"
-                    label="Product name (EN)"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    hide-details="auto"
-                  />
-                </v-col>
-              </v-row>
-            </div>
-
-            <!-- Short desc -->
-            <div class="mt-4">
-              <v-label class="mb-2">รายละเอียดแบบย่อ</v-label>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-textarea
-                    v-model="form.short_desc_th"
-                    label="รายละเอียดแบบย่อ (ไทย)"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    auto-grow
-                    maxlength="160"
-                    hide-details
-                  />
-                  <div class="text-caption text-medium-emphasis mt-1">
-                    {{ (form.short_desc_th ?? '').length }}/160
-                  </div>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-textarea
-                    v-model="form.short_desc_en"
-                    label="Short description (EN)"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    auto-grow
-                    maxlength="160"
-                    hide-details
-                  />
-                  <div class="text-caption text-medium-emphasis mt-1">
-                    {{ (form.short_desc_en ?? '').length }}/160
-                  </div>
-                </v-col>
-              </v-row>
-            </div>
-
-            <!-- Description -->
-            <div class="mt-4">
-              <v-label class="mb-2">รายละเอียดสินค้า</v-label>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-textarea
-                    v-model="form.description_th"
-                    label="รายละเอียดสินค้า (ไทย)"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    auto-grow
-                    rows="6"
-                    hide-details
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-textarea
-                    v-model="form.description_en"
-                    label="Description (EN)"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    auto-grow
-                    rows="6"
-                    hide-details
-                  />
-                </v-col>
-              </v-row>
-            </div>
-          </v-col>
-
-          <!-- RIGHT -->
-          <v-col cols="12" lg="6">
-            <v-label class="mb-2">ภาพสินค้า</v-label>
-            <v-sheet
-              class="d-flex flex-column align-center justify-center text-center ga-3"
-              rounded="xl"
-              color="grey-lighten-4"
-              border="dashed"
-              height="180"
-            >
-              <input
-                ref="fileEl"
-                type="file"
-                accept="image/*"
-                class="d-none"
-                @change="onFile"
-              />
-              <v-avatar size="48" color="white"
-                ><v-icon icon="mdi-cloud-upload"
-              /></v-avatar>
-              <div class="text-body-2 text-medium-emphasis">
-                ลากไฟล์มาวาง หรือ
-              </div>
-              <v-btn variant="outlined" rounded="xl" @click="fileEl?.click()"
-                >เลือกไฟล์</v-btn
-              >
-              <div v-if="uploading" class="text-caption text-medium-emphasis">
-                กำลังอัปโหลด…
-              </div>
-            </v-sheet>
-
-            <div v-if="form.image_url" class="mt-3">
-              <v-img
-                :src="form.image_url"
-                aspect-ratio="16/9"
-                rounded="lg"
-                class="elevation-1"
-                cover
-              />
-              <div class="d-flex ga-2 mt-2">
-                <v-btn
-                  variant="outlined"
-                  rounded="lg"
-                  @click="form.image_url = ''"
-                  >ลบรูป</v-btn
-                >
-                <v-btn
-                  variant="outlined"
-                  rounded="lg"
-                  :href="form.image_url"
-                  target="_blank"
-                  >เปิดรูป</v-btn
-                >
-              </div>
-            </div>
-
-            <!-- Preview card -->
-            <v-card class="mt-4" rounded="xl" variant="tonal">
-              <v-card-text>
-                <div class="d-flex ga-3">
-                  <v-avatar size="80" rounded="lg" variant="tonal">
-                    <v-img :src="form.image_url || placeholder" cover />
-                  </v-avatar>
-                  <div class="flex-1">
-                    <div class="text-subtitle-1 font-weight-medium">
-                      {{ form.name_th || 'ชื่อสินค้า' }}
-                    </div>
-                    <div class="text-caption text-medium-emphasis">
-                      {{ catTitle(form.category_id) || 'หมวดหมู่' }}
-                    </div>
-                    <div class="text-body-2 mt-1">
-                      {{
-                        form.short_desc_th || 'รายละเอียดแบบย่อจะแสดงที่นี่'
-                      }}
-                    </div>
-                    <div
-                      v-if="form.name_en"
-                      class="text-caption mt-1 text-medium-emphasis"
-                    >
-                      EN: {{ form.name_en }}
-                    </div>
-                  </div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
-</template>
-
 <script setup lang="ts">
-import { reactive, ref, computed, watch } from 'vue'
+import { ref, watch, computed, onBeforeUnmount, onMounted } from 'vue'
+import type { ProductItem } from '~/types/product';
 
-const props = defineProps<{ open: boolean; categories: any[]; modelValue: any | null }>()
-const emit = defineEmits(['update:open', 'saved'])
+/** Props & Emits */
+const props = defineProps<{
+  open: boolean
+  modelValue: ProductItem | null
+}>()
 
-const open = computed({
-  get: () => props.open,
-  set: (v: boolean) => emit('update:open', v),
-})
+const emit = defineEmits<{
+  (e: 'update:open', v: boolean): void
+  (e: 'saved', data: FormData, index: number | null): void
+}>()
 
-const isEdit = ref(false)
-const fileEl = ref<HTMLInputElement | null>(null)
-const uploading = ref(false)
-const saving = ref(false)
-const placeholder = 'https://placehold.co/120x120?text=Preview'
+/** Dialog state */
+const isOpen = ref(props.open)
+watch(() => props.open, v => (isOpen.value = v))
+watch(isOpen, v => emit('update:open', v))
 
-/** ฟอร์ม 2 ภาษา */
-const form = reactive({
-  id: '',
-  category_id: '',
-  image_url: '',
-  name_th: '',
-  name_en: '',
-  short_desc_th: '',
-  short_desc_en: '',
+/** Form state */
+const blank: ProductItem = {
+  id: '' as any,
+  categories_id: '0',
+  product_name_th: '',
+  product_name_en: '',
+  product_image_url: '',
+  product_link: '',
   description_th: '',
   description_en: '',
+  price: '',
+  sales_price: '',
+  rating: '',
+  updated_at: ''
+}
+const form = ref<ProductItem>({ ...blank })
+const isEdit = computed(() => !!props.modelValue?.id)
+
+/** --------- Upload & Preview --------- */
+const fileInput = ref<HTMLInputElement | null>(null)
+const imageFile = ref<File | null>(null)
+const objectUrl = ref<string>('')
+
+const normalizeUrl = (u?: string) => {
+  if (!u) return ''
+  if (u.startsWith('//')) return 'https:' + u
+  return u
+}
+
+const previewSrc = computed(() => {
+  if (objectUrl.value) return objectUrl.value
+  return normalizeUrl(form.value.product_image_url || '')
 })
 
-const errors = reactive<{ [k: string]: string }>({})
-
-/** แสดงชื่อหมวดหมู่ */
-const catTitle = (id: string) => {
-  const c = props.categories.find((c) => c.id === id)
-  return c?.name_th || ''
-}
-
-const validate = () => {
-  errors.category_id = form.category_id ? '' : 'กรุณาเลือกหมวดหมู่'
-  errors.name_th = form.name_th ? '' : 'กรุณากรอกชื่อสินค้า (ไทย)'
-  return !errors.category_id && !errors.name_th
-}
-
-const quickAddCategory = async () => {
-  const nameTh = prompt('ชื่อหมวดหมู่ (ไทย)')
-  if (!nameTh?.trim()) return
-  const nameEn = prompt('Category name (English)') || ''
-  // TODO: POST ไป backend แล้วให้ parent โหลดใหม่
-}
-
-const onFile = async (e: Event) => {
-  const file = (e.target as HTMLInputElement).files?.[0]
-  if (!file) return
-  uploading.value = true
-  try {
-    // upload file logic
-    // form.image_url = uploadedUrl
-  } finally {
-    uploading.value = false
+const revokeURL = () => {
+  if (objectUrl.value) {
+    URL.revokeObjectURL(objectUrl.value)
+    objectUrl.value = ''
   }
 }
 
-const save = async () => {
-  if (!validate()) return
-  saving.value = true
-  try {
-    
-    const payload = { ...form }
-    console.log(payload);
-
-    emit('saved', { mode: isEdit.value ? 'update' : 'create', data: payload })
-    open.value = false
-  } finally {
-    saving.value = false
-  }
+const setFile = (f: File | null) => {
+  revokeURL()
+  imageFile.value = null
+  if (!f) return
+  if (!/image\/(jpeg|png|webp|gif)/i.test(f.type)) return
+  imageFile.value = f
+  objectUrl.value = URL.createObjectURL(f)
 }
 
-const onClose = () => (open.value = false)
+const pickImage = () => fileInput.value?.click()
+const onFileChange = (e: Event) => {
+  const el = e.target as HTMLInputElement
+  setFile(el.files?.[0] || null)
+}
+const onDragOver = (e: DragEvent) => { e.preventDefault(); e.stopPropagation() }
+const onDrop = (e: DragEvent) => {
+  e.preventDefault(); e.stopPropagation()
+  const f = e.dataTransfer?.files?.[0] || null
+  setFile(f)
+}
+const clearImage = () => { setFile(null); if (fileInput.value) fileInput.value.value = '' }
 
-/** watch modelValue -> reset form */
+onBeforeUnmount(revokeURL)
+
+/** --------- Categories --------- */
+interface Category {
+  id: string
+  name_th: string
+  name_en?: string
+}
+const categories = ref<Category[]>([])
+
+const { $api } = useNuxtApp()
+const fetchCategories = async () => {
+  try {
+    const res = await $api<{ status: boolean; data: Category[] }>('/settings/categories')
+    categories.value = [
+      { id: '0', name_th: 'เลือกหมวดหมู่สินค้า' }, // ✅ option พิเศษ
+      ...(res.data || [])
+    ]
+  } catch (err) {
+    console.error('โหลด categories ไม่ได้', err)
+  }
+}
+onMounted(fetchCategories)
+
+/** --------- Watch Model --------- */
 watch(
   () => props.modelValue,
   (val) => {
-    if (!val) {
-      // เพิ่มสินค้าใหม่
-      isEdit.value = false
-      form.id = ''
-      form.category_id = ''
-      form.image_url = ''
-      form.name_th = ''
-      form.name_en = ''
-      form.short_desc_th = ''
-      form.short_desc_en = ''
-      form.description_th = ''
-      form.description_en = ''
-    } else {
-      // แก้ไขสินค้า
-      isEdit.value = true
-      form.id = val.id || val._id || ''
-      form.category_id = val.category_id || ''
-      form.image_url = val.image_url || ''
-      form.name_th = val.name_th || val.name || ''
-      form.name_en = val.name_en || ''
-      form.short_desc_th = val.short_desc_th || ''
-      form.short_desc_en = val.short_desc_en || ''
-      form.description_th = val.description_th || ''
-      form.description_en = val.description_en || ''
-    }
+    form.value = val ? { ...val } : { ...blank }
+    clearImage()
   },
   { immediate: true }
 )
+
+/** --------- Save --------- */
+const save = () => {
+  if (!form.value.product_name_th?.trim()) return
+
+  const fd = new FormData()
+
+  // helper: append เฉพาะเมื่อมีค่า และแปลงเป็น string เสมอ
+  const appendStr = (key: string, val: unknown) => {
+    if (val === undefined || val === null) return
+    fd.append(key, String(val))
+  }
+
+  // id (อัปเดต)
+  appendStr('product_id', form.value.id)
+
+  // ✅ ต้องเป็น string
+  appendStr('categories_id', form.value.categories_id || '') // ถ้าเป็น number จะถูก String() เป็น "1" เป็นต้น
+
+  appendStr('product_name_th', form.value.product_name_th)
+  appendStr('product_name_en', form.value.product_name_en || '')
+  appendStr('product_link', form.value.product_link || '')
+
+   appendStr('description_th', form.value.description_th)
+  appendStr('description_en', form.value.description_en || '')
+
+  // ✅ price / sales_price / rating อาจเป็น number → แปลงเป็น string
+  appendStr('price', form.value.price || '')
+  appendStr('sales_price', form.value.sales_price || '')
+  appendStr('rating', form.value.rating || '')
+
+  // รูป
+  if (imageFile.value) {
+    fd.append('product_image', imageFile.value) // File
+  } else if (form.value.product_image_url) {
+    appendStr('product_image_url', form.value.product_image_url) // string
+  }
+
+  emit('saved', fd, null)
+  isOpen.value = false
+}
 </script>
+
+<template>
+  <v-dialog v-model="isOpen" max-width="720">
+    <v-card rounded="xl">
+      <v-card-title class="py-4">
+        {{ isEdit ? 'แก้ไขสินค้า' : 'เพิ่มสินค้า' }}
+      </v-card-title>
+      <v-divider />
+
+      <v-card-text class="pt-4">
+        <v-row>
+          <!-- Dropzone Upload -->
+          <v-col cols="12">
+            <div class="rounded-xl border-dashed" style="border:2px dashed rgba(0,0,0,.15);padding:16px;" @drop="onDrop"
+              @dragover="onDragOver">
+              <div class="d-flex ga-4 align-start">
+                <div class="rounded-lg"
+                  style="width:160px;height:120px;overflow:hidden;background:#f3f4f6;display:grid;place-items:center;">
+                  <img v-if="previewSrc" :src="previewSrc" alt="preview"
+                    style="width:100%;height:100%;object-fit:cover;" />
+                  <div v-else class="text-medium-emphasis text-caption">ไม่มีรูป</div>
+                </div>
+
+                <div class="flex-grow-1">
+                  <div class="text-subtitle-2 mb-1">รูปสินค้า</div>
+                  <div class="text-body-2 text-medium-emphasis mb-2">
+                    ลากไฟล์มาวางที่นี่ หรือกดเลือกไฟล์ (รองรับ .jpg .png .webp .gif)
+                  </div>
+
+                  <div class="d-flex ga-2">
+                    <v-btn variant="tonal" color="primary" @click="pickImage">เลือกไฟล์</v-btn>
+                    <v-btn v-if="imageFile || objectUrl" variant="text" color="error" @click="clearImage">
+                      ลบไฟล์ใหม่
+                    </v-btn>
+                  </div>
+
+                  <input ref="fileInput" type="file" accept="image/*" class="d-none" @change="onFileChange" />
+
+                  <div v-if="imageFile" class="mt-2 text-body-2">
+                    ไฟล์ที่เลือก: <b>{{ imageFile.name }}</b>
+                  </div>
+                  <div v-else-if="form.product_image_url" class="mt-2 text-body-2 text-medium-emphasis">
+                    ใช้รูปเดิมจาก <span class="text-primary">{{ form.product_image_url }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </v-col>
+
+          <!-- Category Select -->
+
+
+
+
+
+
+          <v-col cols="12" md="6">
+            <v-text-field v-model="form.product_name_th" label="ชื่อสินค้า (ไทย)" variant="outlined" hide-details="auto"
+              :rules="[v => !!v || 'จำเป็น']" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="form.product_name_en" label="ชื่อสินค้า (อังกฤษ)" variant="outlined" hide-details />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-textarea v-model="form.description_th" label="รายละเอียดสินค้า (ไทย)" rows="3" auto-grow />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-textarea v-model="form.description_en" label="รายละเอียดสินค้า (อังกฤษ)" rows="3" auto-grow />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="form.price" label="ราคา (ปกติ)" variant="outlined" hide-details prefix="฿" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="form.sales_price" label="ราคา (ลด)" variant="outlined" hide-details prefix="฿" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="form.rating" label="เรตติ้ง (0–5)" variant="outlined" hide-details />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select v-model="form.categories_id" :items="categories" item-title="name_th" item-value="id"
+              label="หมวดหมู่สินค้า" placeholder="เลือกหมวดหมู่สินค้า" variant="outlined" hide-details clearable />
+          </v-col>
+
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions class="px-4 pb-4">
+        <v-spacer />
+        <v-btn variant="text" @click="isOpen = false">ยกเลิก</v-btn>
+        <v-btn color="primary" @click="save">
+          {{ isEdit ? 'บันทึกการเปลี่ยนแปลง' : 'เพิ่มสินค้า' }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>

@@ -4,7 +4,7 @@ definePageMeta({
 });
 import WorkShow from "@/components/frontend/WorkShow.vue";
 import Footer from "~/components/Layout/Footer.vue";
-
+import FloatingContactButtons from "@/components/frontend/FloatingContactButtons.vue";
 </script>
 <template>
     <LayoutHeader class="pages" />
@@ -14,6 +14,7 @@ import Footer from "~/components/Layout/Footer.vue";
         <p class=" mt-1"></p>
     </div>
     <WorkShow class="pages" />
+    <FloatingContactButtons />
     <Footer />
 </template>
 <style>

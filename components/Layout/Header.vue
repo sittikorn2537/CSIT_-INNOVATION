@@ -17,9 +17,9 @@
       </nav>
 
       <!-- Right: CTA -->
-      <div class="site-action">
+      <!-- <div class="site-action">
         <NuxtLink to="/contact-us" class="btn-cta"> {{ $t('nav.contact') }} </NuxtLink>
-      </div>
+      </div> -->
 
       <div class="relative inline-block text-left ml-auto">
         <!-- ปุ่ม -->
@@ -95,8 +95,10 @@ const menu = computed(() => [
   { id: 26, label: t('nav.home'), to: localePath('/') },
   // anchor ต้องสร้างเป็น object: path + hash
   { id: 260, label: t('nav.services'), to: { path: localePath('/'), hash: '#service' } },
-  { id: 165, label: t('nav.works'), to: localePath('/our-work') },
   { id: 167, label: t('nav.products'), to: localePath('/product') },
+  { id: 165, label: t('nav.works'), to: localePath('/our-work') },
+  { id: 165, label: t('nav.Clients'), to: { path: localePath('/'), hash: '#clients' } },
+
   { id: 169, label: t('nav.contact'), to: localePath('/contact') },
 ])
 

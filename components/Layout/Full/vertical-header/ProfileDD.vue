@@ -10,11 +10,11 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
         <template v-slot:activator="{ props }">
             <v-btn class="" variant="text" v-bind="props" icon>
                 <v-avatar size="35">
-                    <img src="/images/profile/user-1.jpg" height="35" alt="user" />
+                    <img src="/images/profile/user-2.jpg" height="35" alt="user" />
                 </v-avatar>
             </v-btn>
         </template>
-        <v-sheet rounded="xl" width="200" elevation="10" class="mt-2">
+        <!-- <v-sheet rounded="xl" width="200" elevation="10" class="mt-2">
             <v-list class="py-0" lines="one" density="compact">
                 <v-list-item value="item1" color="primary" >
                     <template v-slot:prepend>
@@ -38,6 +38,6 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
             <div class="pt-4 pb-4 px-5 text-center">
                 <v-btn to="/auth/login" color="primary" variant="outlined" class="rounded-pill" block>Logout</v-btn>
             </div>
-        </v-sheet>
+        </v-sheet> -->
     </v-menu>
 </template>

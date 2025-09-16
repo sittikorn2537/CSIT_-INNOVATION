@@ -16,7 +16,6 @@ import FloatingContactButtons from "@/components/frontend/FloatingContactButtons
 import Footer from "~/components/Layout/Footer.vue";
 
 
-const { locale, setLocale, t } = useI18n()
 
 // const route = useRoute()
 const localePath = useLocalePath()
@@ -27,8 +26,8 @@ const localePath = useLocalePath()
     <Service />
     <WorkShowcase />
     <Product />
-    <Clients />
-    <FloatingContactButtons line-url="https://line.me/R/ti/p/@CSInnovation" phone="0936351949" />
+    <Clients id="clients" />
+    <FloatingContactButtons />
     <!-- <Contact /> -->
     <Footer />
 

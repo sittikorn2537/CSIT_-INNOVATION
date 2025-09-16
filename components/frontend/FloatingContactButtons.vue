@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+
+const { info } = useContactInfo()
 
 const props = withDefaults(defineProps<{
   lineUrl?: string
@@ -7,19 +10,23 @@ const props = withDefaults(defineProps<{
   wechatUrl?: string
   show?: boolean
 }>(), {
-  lineUrl: 'https://line.me/R/ti/p/@yourline',
-  phone: '0936351949',
-  wechatUrl: 'https://wechat.com/', // ✅ แก้เป็น wechat official link ของคุณ
+  lineUrl: undefined,
+  phone: undefined,
+  wechatUrl: undefined,
   show: true,
 })
+
+// ✅ รวม props กับ fallback จาก info
+const lineUrl = computed(() => props.lineUrl || (info.value?.line_id ? 'https://line.me/R/ti/p/' + info.value.line_id : ''))
+const phone = computed(() => props.phone || info.value?.phone_main || '')
+const wechatUrl = computed(() => props.wechatUrl || (info.value?.wechat ? 'weixin://dl/chat?$' + info.value.wechat : ''))
 </script>
 
 <template>
   <div v-if="show" class="floating">
     <!-- WeChat -->
     <a
-      :href="props.wechatUrl"
-      target="_blank"
+      :href="wechatUrl"
       rel="noopener"
       aria-label="Chat on WeChat"
       class="btn btn-wechat"
@@ -29,7 +36,7 @@ const props = withDefaults(defineProps<{
 
     <!-- LINE -->
     <a
-      :href="props.lineUrl"
+      :href="lineUrl"
       target="_blank"
       rel="noopener"
       aria-label="Chat on LINE"
@@ -40,7 +47,7 @@ const props = withDefaults(defineProps<{
 
     <!-- PHONE -->
     <a
-      :href="`tel:${props.phone}`"
+      :href="`tel:${phone}`"
       aria-label="Call us"
       class="btn btn-phone"
     >

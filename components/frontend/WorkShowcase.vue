@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted, watch } from "vue"
+import { useI18n } from "vue-i18n"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import { Navigation, Pagination, A11y } from "swiper/modules"
 
@@ -7,35 +8,70 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 
+type ApiWork = {
+  id: number | string
+  categories_id?: number | string
+  categories_th?: string
+  categories_en?: string
+  title_th?: string
+  title_en?: string
+  image_url?: string
+  description?: string
+  updated_at?: string
+}
+
 type Item = {
   id: number
   src: string
-  category: "ทั้งหมด" | "บ้าน" | "ธุรกิจ" | "สำนักงาน" | "โรงงาน" | "ฟาร์มเลี้ยงสัตว์"
+  category: string
 }
 
-const data: Item[] = [
-  { id: 1, src: "https://picsum.photos/800/600?random=21", category: "บ้าน" },
-  { id: 2, src: "https://picsum.photos/800/600?random=22", category: "บ้าน" },
-  { id: 3, src: "https://picsum.photos/800/600?random=23", category: "สำนักงาน" },
-  { id: 4, src: "https://picsum.photos/800/600?random=24", category: "ธุรกิจ" },
-  { id: 5, src: "https://picsum.photos/800/600?random=25", category: "โรงงาน" },
-  { id: 6, src: "https://picsum.photos/800/600?random=26", category: "บ้าน" }
-]
+const { $api } = useNuxtApp()
+const { locale } = useI18n()
+
+const raw = ref<ApiWork[]>([])
+const activeCat = ref("ทั้งหมด") // ค่าเริ่มต้นภาษาไทย
+
+const normalizeUrl = (u?: string) => (u ? (u.startsWith("//") ? "https:" + u : u) : "")
+
+const items = computed<Item[]>(() =>
+  raw.value.map(w => ({
+    id: Number(w.id),
+    src: normalizeUrl(w.image_url),
+    category: locale.value === "th"
+      ? (w.categories_th || "ทั้งหมด")
+      : (w.categories_en || "All")
+  }))
+)
 
 const categories = computed(() => {
   const set = new Set<string>()
-  set.add("ทั้งหมด")
-  data.forEach(item => set.add(item.category))
+  // label "ทั้งหมด/All" ตาม locale
+  set.add(locale.value === "th" ? "ทั้งหมด" : "All")
+  items.value.forEach(i => set.add(i.category || (locale.value === "th" ? "ทั้งหมด" : "All")))
   return Array.from(set)
 })
 
-const activeCat = ref("ทั้งหมด")
+const filtered = computed(() => {
+  const allLabel = locale.value === "th" ? "ทั้งหมด" : "All"
+  return activeCat.value === allLabel ? items.value : items.value.filter(i => i.category === activeCat.value)
+})
 
-const filtered = computed(() =>
-  activeCat.value === "ทั้งหมด"
-    ? data
-    : data.filter(i => i.category === activeCat.value)
-)
+const loadWorks = async () => {
+  try {
+    const res = await $api<any>('/settings/works')
+    raw.value = Array.isArray(res) ? res : (res?.data || [])
+    // ถ้า activeCat เดิมไม่ตรงกับ locale ให้รีเซ็ตเป็น All/ทั้งหมด
+    const allLabel = locale.value === "th" ? "ทั้งหมด" : "All"
+    if (!categories.value.includes(activeCat.value)) activeCat.value = allLabel
+  } catch (e) {
+    console.error('load /settings/works failed', e)
+    raw.value = []
+  }
+}
+
+onMounted(loadWorks)
+watch(locale, loadWorks)
 </script>
 
 <template>
@@ -45,12 +81,12 @@ const filtered = computed(() =>
       <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800">
         {{ $t("nav.works") }}
       </h2>
-      <p class="text-base text-slate-600 mt-3 mb-6 max-w-3xl mx-auto">
+      <!-- <p class="text-base text-slate-600 mt-3 mb-6 max-w-3xl mx-auto">
         {{ $t("work.description") }}
-      </p>
+      </p> -->
 
       <!-- ปุ่มเลือกหมวด -->
-      <div class="mb-8 flex flex-wrap justify-center gap-3">
+      <div class="mb-8 flex flex-wrap justify-center gap-3 mt-5">
         <button
           v-for="c in categories"
           :key="c"
@@ -66,12 +102,12 @@ const filtered = computed(() =>
         </button>
       </div>
 
-      <!-- Swiper แถวเดียว -->
+      <!-- Swiper แถวเดียว (คงดีไซน์เดิม) -->
       <Swiper
         :modules="[Navigation, Pagination, A11y]"
         :slides-per-view="1.2"
         :space-between="16"
-        navigation
+        
         :pagination="{ clickable: true }"
         :breakpoints="{
           640: { slidesPerView: 2.2, spaceBetween: 20 },

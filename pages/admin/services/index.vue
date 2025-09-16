@@ -53,7 +53,7 @@ const apiCreate = async (
 
 const apiUpdate = async (id: number | string, payload: Partial<ServiceItem>): Promise<ServiceItem> => {
   const res = await $api<ApiResponse<ServiceItem>>(`/settings/services/${id}`, {
-    method: 'PUT',
+    method: 'POST',
     body: payload
   })
   // รวมข้อมูล: ให้ payload ทับของเดิม, และให้ของจาก API (ถ้ามี) ทับทับอีกรอบ

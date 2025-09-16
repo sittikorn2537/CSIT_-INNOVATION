@@ -11,6 +11,7 @@ import {
   UserPlusIcon,
   MoodHappyIcon,
   FileDescriptionIcon,
+  BuildingStoreIcon,
 } from 'vue-tabler-icons'
 
 export interface menu {
@@ -33,11 +34,11 @@ export interface menu {
 
 const sidebarItem: menu[] = [
   { header: 'Home' },
-  {
-    title: 'Dashboard',
-    icon: LayoutDashboardIcon,
-    to: '/admin/dashboard',
-  },
+  // {
+  //   title: 'Dashboard',
+  //   icon: LayoutDashboardIcon,
+  //   to: '/admin/dashboard',
+  // },
   {
     title: 'รูปภาพสไลด์',
     icon: PhotoIcon,
@@ -60,7 +61,7 @@ const sidebarItem: menu[] = [
   },
     {
     title: 'หมวดหมู่ผลงาน',
-    icon: BriefcaseIcon,
+    icon: CategoryIcon,
     to: '/admin/category_work',
   },
   {
@@ -73,30 +74,31 @@ const sidebarItem: menu[] = [
     icon: UsersIcon,
     to: '/admin/clients',
   },
+  {
+    title: 'ตั้งค่าบริษัท',
+    icon: BuildingStoreIcon,
+    to: '/admin/setting',
+  },
 
   { header: 'Auth' },
   {
-    title: 'Login',
+    title: 'Logout',
     icon: LoginIcon,
-    to: '/auth/login',
+    to: '/admin/auth/logout',
   },
-  {
-    title: 'Register',
-    icon: UserPlusIcon,
-    to: '/auth/register',
-  },
+  
 
-  { header: 'Extra' },
-  {
-    title: 'Icons',
-    icon: MoodHappyIcon, // หรือจะเปลี่ยนเป็น Icon เฉพาะทางอื่นก็ได้
-    to: '/pages/icons',
-  },
-  {
-    title: 'Sample Page',
-    icon: FileDescriptionIcon,
-    to: '/pages/sample-page',
-  },
+  // { header: 'Extra' },
+  // {
+  //   title: 'Icons',
+  //   icon: MoodHappyIcon, // หรือจะเปลี่ยนเป็น Icon เฉพาะทางอื่นก็ได้
+  //   to: '/pages/icons',
+  // },
+  // {
+  //   title: 'Sample Page',
+  //   icon: FileDescriptionIcon,
+  //   to: '/pages/sample-page',
+  // },
 ]
 
 export default sidebarItem

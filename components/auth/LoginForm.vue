@@ -5,8 +5,8 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-const username = ref('admin')
-const password = ref('csit2025@admin')
+const username = ref('')
+const password = ref('')
 const remember = ref(false)
 
 const loading = ref(false)
@@ -39,7 +39,7 @@ const onSubmit = async () => {
     }
     console.log('Login success', res._data)
     // ✅ redirect ไปตาม query redirect หรือ dashboard
-    const redirect = (route.query.redirect as string) || '/admin/dashboard'
+    const redirect = (route.query.redirect as string) || '/admin/slide'
     return navigateTo(redirect)
   } catch (err: any) {
     errorMsg.value = err?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ'
@@ -47,6 +47,10 @@ const onSubmit = async () => {
     loading.value = false
   }
 }
+
+const { info } = useContactInfo()
+
+
 </script>
 
 <template>
@@ -54,7 +58,7 @@ const onSubmit = async () => {
         <div class="d-flex align-center text-center mb-6">
             <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative">
                 <span class="bg-surface px-5 py-3 position-relative text-subtitle-1 text-grey100">
-                    Your Social Campaigns
+                    {{ info?.company_th }}
                 </span>
             </div>
         </div>
@@ -72,7 +76,7 @@ const onSubmit = async () => {
                     autocomplete="current-password" />
             </v-col>
 
-            <v-col cols="12" class="py-0">
+            <!-- <v-col cols="12" class="py-0">
                 <div class="d-flex flex-wrap align-center w-100">
                     <v-checkbox v-model="remember" hide-details color="primary" density="compact">
                         <template #label>Remember this Device</template>
@@ -84,7 +88,7 @@ const onSubmit = async () => {
                         </RouterLink>
                     </div>
                 </div>
-            </v-col>
+            </v-col> -->
 
             <v-col cols="12" v-if="errorMsg" class="py-0">
                 <v-alert type="error" variant="tonal" density="compact" class="mb-3">

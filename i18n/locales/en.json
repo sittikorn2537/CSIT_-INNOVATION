@@ -1,33 +1,55 @@
 {
-  "company":{
-    "name": "C.S. Innovation Technology Co., Ltd.",
+  "meta": {
+    "title": "C.S. Innovation Technology Co., Ltd. (CSIT)",
+    "description": "C.S. Innovation Technology Co., Ltd. (CSIT) specializes in the design, procurement, and integration of broadcast systems, centralized storage, and complete IT solutions",
+    "ogTitle": "C.S. Innovation Technology Co., Ltd. (CSIT)",
+    "ogDescription": "CSIT – Your trusted partner in broadcast, storage, and IT system integration.",
+    "ogImage": "/images/logos/logo-dark.png"
+  },
+  "company": {
+    "name": "C.S. Innovation Technology Co., Ltd. (CSIT)",
     "address1": "88/1 Soi Suksawat 30 Yak 7, Suksawat Road, Bangpakok, Rat Burana, Bangkok 10140",
-    "title": "Importer and Distributor of Comprehensive Communication Equipment",
-    "description": "We import and distribute high-quality communication equipment, delivering reliable solutions for businesses and households."
+    "title": "We are a professional provider in the design, procurement, and integration of broadcast systems, centralized storage solutions, and IT infrastructure, delivering comprehensive services that meet the diverse needs of our clients.",
+    "description": "With our expertise and skilled team, we cover a full range of services from studio systems, post-production, broadcasting, centralized storage solutions, to modern IT solutions — empowering organizations to enhance efficiency and gain competitive advantage in the digital era."
   },
   "nav": {
     "home": "Home",
     "services": "Services",
-    "works": "Our Works",
+    "works": "Portfolio",
     "products": "Products",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "Clients": "Clients"
   },
   "service": {
-    "description": "We are an importer and distributor of high-quality communication system equipment, covering a wide range of applications for both businesses and households. Our mission is to provide reliable and comprehensive solutions to meet all your communication needs."
+    "description": "With our expertise and skilled team, we cover a full range of services from studio systems, post-production, broadcasting, centralized storage solutions, to modern IT solutions — empowering organizations to enhance efficiency and gain competitive advantage in the digital era.",
+    "text1": "CSIT brings extensive expertise in the design, procurement, and integration of broadcast systems, studio systems, post-production, centralized storage, and end-to-end IT solutions.",
+    "text2": "We provide comprehensive services covering consulting, system design, installation, and after-sales support, ensuring seamless solutions at every stage.",
+    "text3": "We adopt cutting-edge technologies that meet international standards, focusing on quality, stability, and reliability to deliver systems that perform effectively in real-world environments.",
+    "text4": "We prioritize each client’s unique needs, offering flexible solutions that fit their budget while enhancing organizational efficiency and productivity."
   },
   "product": {
-    "description": "We offer a wide range of communication products, including IP cameras, CCTV systems, network devices, and accessories. Our products are sourced from reputable manufacturers to ensure quality and reliability.",
-    "all": "All Products"
+    "description": "We offer a comprehensive range of technology products and solutions — from broadcast systems and centralized storage to high-quality IT equipment — designed to meet all your business needs.",
+    "all": "All Products",
+    "detail": "Product Detail",
+    "price": "Price",
+    "category": "Category",
+    "tag": "Tag",
+    "rating": "Rating"
   },
   "work": {
     "description": "We take pride in our involvement in installing efficient communication systems for a diverse range of clients, including small, medium, and large businesses, as well as government projects and households. We are committed to delivering high-quality work that fully meets our clients' needs.",
-    "all": "All Works"  
+    "all": "All Works"
   },
-  "footer" : {
+  "footer": {
     "menu": "Menu",
-    "Newsletter":" Subscribe to our Newsletter",
+    "Newsletter": " Subscribe to our Newsletter",
     "subscribe": "Subscribe",
-    "detail":"Stay updated with our latest news and information."
+    "detail": "Stay updated with our latest news and information."
+  },
+  "common": {
+    "prev": "Previous",
+    "next": "Next",
+    "empty": "No data found",
+    "loading": "Loading..."
   }
 }
-

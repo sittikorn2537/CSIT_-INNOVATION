@@ -13,8 +13,8 @@ const all = ref<WorkItem[]>([])
 const items = ref<WorkItem[]>([])
 const loading = ref(false)
 
-const search  = ref('')
-const page    = ref(1)
+const search = ref('')
+const page = ref(1)
 const perPage = ref(10)
 const hasMore = ref(false)
 
@@ -32,21 +32,55 @@ const apiList = async (): Promise<WorkItem[]> => {
   return res.data ?? []
 }
 
-const apiCreate = async (payload: Omit<WorkItem, 'id' | 'updated_at'>): Promise<WorkItem> => {
-  const res = await $api<ApiResponse<WorkItem>>('/settings/works', {
-    method: 'POST',
-    body: payload
-  })
-  // เผื่อ backend ไม่คืน data
-  return res.data ?? { ...payload, id: crypto.randomUUID(), updated_at: new Date().toISOString() }
+// สร้าง
+const apiCreateFD = async (fd: FormData): Promise<WorkItem> => {
+  // ถ้า backend รับ POST /settings/works เป็น multipart ได้ตรงๆ
+  const res = await $api<{ status: boolean; message: string; data?: WorkItem }>(
+    '/settings/works',
+    { method: 'POST', body: fd }
+  )
+  if (res?.data) return res.data
+
+  // fallback: เผื่อ backend ไม่คืนเต็ม
+  return {
+    id: crypto.randomUUID(),
+    title_th: String(fd.get('title_th') || ''),
+    title_en: String(fd.get('title_en') || ''),
+    description: String(fd.get('description') || ''),
+    categories_id: String(fd.get('categories_id') || ''),
+    image_url: typeof fd.get('image_url') === 'string' ? String(fd.get('image_url')) : '',
+    updated_at: new Date().toISOString()
+  } as WorkItem
 }
 
-const apiUpdate = async (id: number | string, payload: Partial<WorkItem>): Promise<WorkItem> => {
-  const res = await $api<ApiResponse<WorkItem>>(`/settings/works/${id}`, {
-    method: 'PUT',
-    body: payload
-  })
-  return res.data ?? { id, ...payload, updated_at: new Date().toISOString() } as WorkItem
+// อัปเดต
+const apiUpdateFD = async (id: string | number, fd: FormData): Promise<WorkItem> => {
+  // ถ้าเซิร์ฟเวอร์ไม่รองรับ PUT multipart ให้ใช้ POST พร้อม _method=PUT
+  // fd.set('_method', 'PUT')
+  // const res = await $api<{ status: boolean; message: string; data?: WorkItem }>(
+  //   `/settings/works/${id}`, { method: 'POST', body: fd }
+  // )
+
+  const res = await $api<{ status: boolean; message: string; data?: WorkItem }>(
+    `/settings/works/${id}`,
+    { method: 'POST', body: fd }
+  )
+  if (res?.data) return res.data
+
+  // fallback: รวมค่าจาก fd กับของเดิม
+  const prev = all.value.find(w => String(w.id) === String(id))
+  const getS = (k: string) => String(fd.get(k) ?? (prev as any)?.[k] ?? '')
+  return {
+    ...(prev || ({} as WorkItem)),
+    id,
+    title_th: getS('title_th'),
+    title_en: getS('title_en'),
+    description: getS('description'),
+    categories_id: getS('categories_id'),
+    // ถ้า backend สร้าง URL ใหม่จากไฟล์ จะคืนใน res.data — ถ้าไม่คืน ใช้ค่าเดิม
+    image_url: typeof fd.get('image') === 'object' ? (prev?.image_url || '') : getS('image_url'),
+    updated_at: new Date().toISOString()
+  }
 }
 
 const apiDelete = async (id: number | string): Promise<void> => {
@@ -73,7 +107,7 @@ const filterAndPaginate = () => {
     )
   }
   const start = (page.value - 1) * perPage.value
-  const end   = start + perPage.value
+  const end = start + perPage.value
   hasMore.value = end < data.length
   items.value = data.slice(start, end)
 }
@@ -100,36 +134,40 @@ const removeItem = async (rowIndex: number) => {
   }
 }
 
+// เปลี่ยน signature ให้รับไฟล์ได้
 const onSaved = async (data: WorkItem, _index: number | null) => {
   loading.value = true
   try {
-    let saved: WorkItem
-    if (data.id) {
-      const payload: Partial<WorkItem> = {
-        title_th: data.title_th,
-        title_en: data.title_en,
-        image_url: data.image_url,
-        description: data.description
-      }
-      saved = await apiUpdate(data.id, payload)
+    // สร้าง FormData ทุกครั้ง
+    const fd = new FormData()
+    fd.append('title_th', data.title_th || '')
+    fd.append('title_en', data.title_en || '')
+    fd.append('description', data.description || '')
+    fd.append('categories_id', String(data.categories_id || ''))
 
-      // อัปเดตใน all แบบ reactive
-      const pos = all.value.findIndex(x => String(x.id) === String(saved.id))
-      if (pos > -1) {
-        const next = all.value.slice()
-        next[pos] = { ...saved }
-        all.value = next
-      } else {
-        all.value = [{ ...saved }, ...all.value]
-      }
+    // ถ้ามีไฟล์ใหม่ ให้ส่งเป็น field ชื่อ 'image' (ปรับชื่อให้ตรงกับ backend)
+    if (data.image) {
+      fd.append('image', data.image)               // <--- File
+    } else if (data.image_url) {
+      // ไม่มีไฟล์ใหม่ แต่มีรูปเดิม ส่ง URL เดิมไปเผื่อ backend ใช้
+      fd.append('image_url', data.image_url)            // <--- string URL
+    }
+
+    let saved: WorkItem
+
+    if (data.id) {
+      saved = await apiUpdateFD(data.id, fd)            // ← ใช้ endpoint อัปเดตแบบ form-data
     } else {
-      const payload: Omit<WorkItem, 'id' | 'updated_at'> = {
-        title_th: data.title_th,
-        title_en: data.title_en,
-        image_url: data.image_url,
-        description: data.description
-      }
-      saved = await apiCreate(payload)
+      saved = await apiCreateFD(fd)                     // ← ใช้ endpoint สร้างแบบ form-data
+    }
+
+    // อัปเดต state ให้รีแอคทีฟ
+    const pos = all.value.findIndex(x => String(x.id) === String(saved.id))
+    if (pos > -1) {
+      const next = all.value.slice()
+      next[pos] = { ...saved }
+      all.value = next
+    } else {
       all.value = [{ ...saved }, ...all.value]
     }
   } finally {
@@ -138,7 +176,6 @@ const onSaved = async (data: WorkItem, _index: number | null) => {
     filterAndPaginate()
   }
 }
-
 /* ---------- lifecycle ---------- */
 onMounted(fetchAll)
 watch([search], () => { page.value = 1; filterAndPaginate() })
@@ -155,17 +192,8 @@ watch(page, filterAndPaginate)
       </div>
 
       <div class="d-flex flex-wrap align-center ga-2">
-        <v-text-field
-          v-model="search"
-          class="flex-grow-1"
-          density="comfortable"
-          variant="solo"
-          hide-details
-          rounded="xl"
-          prepend-inner-icon="mdi-magnify"
-          placeholder="ค้นหาผลงาน…"
-          style="min-width:220px"
-        />
+        <v-text-field v-model="search" class="flex-grow-1" density="comfortable" variant="solo" hide-details
+          rounded="xl" prepend-inner-icon="mdi-magnify" placeholder="ค้นหาผลงาน…" style="min-width:220px" />
         <v-btn color="primary" rounded="xl" class="ms-auto" @click="openForm()">
           <v-icon icon="mdi-plus" class="mr-1" /> เพิ่มผลงาน
         </v-btn>
@@ -180,6 +208,7 @@ watch(page, filterAndPaginate)
             <th class="px-4 py-3">ภาพ</th>
             <th class="px-4 py-3">ชื่อผลงาน</th>
             <th class="px-4 py-3">คำอธิบาย</th>
+            <th class="px-4 py-3">หมวดหมู่</th>
             <th class="px-4 py-3">อัปเดต</th>
             <th class="px-4 py-3 text-right">จัดการ</th>
           </tr>
@@ -198,6 +227,10 @@ watch(page, filterAndPaginate)
             </td>
             <td class="px-4 py-3 text-medium-emphasis">
               <span class="line-clamp-2">{{ w.description || '-' }}</span>
+            </td>
+            <td class="px-4 py-3 font-weight-medium">
+              {{ w.categories_th }}
+              <span v-if="w.categories_en" class="text-medium-emphasis"> / {{ w.categories_en }}</span>
             </td>
             <td class="px-4 py-3 text-medium-emphasis">{{ formatDate(w.updated_at) }}</td>
             <td class="px-4 py-3">
@@ -238,10 +271,6 @@ watch(page, filterAndPaginate)
     </div>
 
     <!-- Dialog Form -->
-    <WorkForm
-      v-model:open="showForm"
-      :model-value="editing"
-      @saved="onSaved"
-    />
+    <WorkForm v-model:open="showForm" :model-value="editing" @saved="onSaved" />
   </v-container>
 </template>

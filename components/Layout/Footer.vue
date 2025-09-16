@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
+const { info } = useContactInfo()
+
 </script>
 
 <template>
@@ -10,8 +12,11 @@ import { Icon } from "@iconify/vue";
       <div>
         <LayoutFullLogoDark class="mb-3" />
         <p class="text-sm leading-relaxed">
-          {{ $t('company.name') }} <br />
-          {{ $t('company.address1') }}
+          <!-- {{ $t('company.name') }} <br />
+          {{ $t('company.address1') }} -->
+          {{ $i18n?.locale === 'en' ? info?.company_en : info?.company_th }}<br />
+          {{ $i18n?.locale === 'en' ? info?.address_en : info?.address_th }}
+
         </p>
       </div>
 
@@ -19,72 +24,83 @@ import { Icon } from "@iconify/vue";
       <div>
         <h6 class="text-lg font-semibold mb-3">{{ $t('footer.menu') }}</h6>
         <ul class="space-y-2 text-sm">
-          <li><NuxtLink class="hover:underline" to="/">{{ $t('nav.home') }}</NuxtLink></li>
-          <li><NuxtLink class="hover:underline" to="/#service">{{ $t('nav.services') }}</NuxtLink></li>
-          <li><NuxtLink class="hover:underline" to="/our-work">{{ $t('nav.works') }}</NuxtLink></li>
-          <li><NuxtLink class="hover:underline" to="/product">{{ $t('nav.products') }}</NuxtLink></li>
-          <li><NuxtLink class="hover:underline" to="/contact">{{ $t('nav.contact') }}</NuxtLink></li>
+          <li>
+            <NuxtLink class="hover:underline" to="/">{{ $t('nav.home') }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink class="hover:underline" to="/#service">{{ $t('nav.services') }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink class="hover:underline" to="/our-work">{{ $t('nav.works') }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink class="hover:underline" to="/product">{{ $t('nav.products') }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink class="hover:underline" to="/contact">{{ $t('nav.contact') }}</NuxtLink>
+          </li>
         </ul>
       </div>
 
       <!-- Contact -->
       <div>
         <h6 class="text-lg font-semibold mb-3">{{ $t('nav.contact') }}</h6>
-        <p class="text-sm font-medium">{{ $t('company.name') }}</p>
-        <p class="text-sm max-w-xs mb-3">{{ $t('company.address1') }}</p>
 
-        <ul class="space-y-2 text-sm">
+
+        <ul class="space-y-2 text-sm ">
           <li>
-            <a href="https://www.facebook.com/CSInnovationTechnology" target="_blank" class="flex items-center gap-2 hover:underline">
-              <Icon icon="line-md:facebook" width="18" height="18" /> C.S Innovation Technology
+            <a v-if="info?.facebook" :href="info.facebook" target="_blank" rel="noopener noreferrer"
+              class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:facebook" width="18" height="18" /> {{ info?.facebook_name }}
             </a>
           </li>
           <li>
             <a href="mailto:test@gamil.com" class="flex items-center gap-2 hover:underline">
-              <Icon icon="line-md:email" width="18" height="18" /> test@gamil.com
+              <Icon icon="line-md:email" width="18" height="18" /> {{ info?.email }}
             </a>
           </li>
           <li>
-            <a href="tel:034105191" class="flex items-center gap-2 hover:underline">
-              <Icon icon="line-md:phone" width="18" height="18" /> 034-105-191
+            <a :href="`tel:{{info?.phone_alt}}`" v-if="info?.phone_main"  class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:phone" width="18" height="18" /> {{ info?.phone_main }}
             </a>
           </li>
           <li>
-            <a href="tel:0936351949" class="flex items-center gap-2 hover:underline">
-              <Icon icon="line-md:phone" width="18" height="18" /> 093-635-1949 (Khun Vittakorn)
+            <a :href="`tel:{{info?.phone_alt}}`" v-if="info?.phone_alt" class="flex items-center gap-2 hover:underline">
+              <Icon icon="line-md:phone" width="18" height="18" /> {{ info?.phone_alt }}
             </a>
           </li>
           <li>
-            <a href="https://line.me/R/ti/p/@CSInnovation" target="_blank" class="flex items-center gap-2 hover:underline">
-              <Icon icon="line-md:chat" width="18" height="18" /> @CSInnovation
+            <a :href="`https://line.me/R/ti/p/${info?.line_id}`" target="_blank"
+              class="flex items-center gap-2 hover:underline">
+              <Icon icon="simple-icons:line" width="18" height="18" /> {{ info?.line_id }}
+            </a>
+          </li>
+          <li>
+            <a :href="`weixin://dl/chat?${info?.wechat}`" target="_blank" class="flex items-center gap-2 hover:underline">
+              <Icon icon="simple-icons:wechat" width="18" height="18" /> {{ info?.wechat }}
             </a>
           </li>
         </ul>
       </div>
 
       <!-- Newsletter -->
-      <div>
+      <!-- <div>
         <h6 class="text-lg font-semibold mb-3">{{ $t('footer.Newsletter') }}</h6>
         <p class="text-sm text-gray-600 mb-3">{{ $t('footer.detail') }}</p>
         <form class="flex">
-          <input
-            type="email"
-            placeholder="E-mail"
-            class="flex-1 px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <button
-            type="submit"
-            class="px-4 py-2 rounded-r-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
-          >
+          <input type="email" placeholder="E-mail"
+            class="flex-1 px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary" />
+          <button type="submit"
+            class="px-4 py-2 rounded-r-md bg-blue-600 text-white font-medium hover:bg-blue-700 transition">
             {{ $t('footer.subscribe') }}
           </button>
         </form>
-      </div>
+      </div> -->
     </div>
 
     <!-- Bottom -->
     <div class="mt-10 border-t border-gray-300 pt-6 text-center text-sm text-gray-500">
-      © {{ new Date().getFullYear() }} {{ $t('company.name') }}. All rights reserved.
+      © {{ new Date().getFullYear() }}  {{ $i18n?.locale === 'en' ? info?.company_en : info?.company_th }}. All rights reserved.
     </div>
   </footer>
 </template>
